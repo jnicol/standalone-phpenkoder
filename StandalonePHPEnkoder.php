@@ -58,8 +58,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class StandalonePHPEnkoder {
   private $enkoder_uses = 0;
   private $js_len = 269;
-  private $enkode_msg = 'email hidden; JavaScript is required';
-  private $enkode_class = 'enkoded-mailto';
+  public $enkode_msg = 'email hidden; JavaScript is required';
+  public $enkode_class = 'enkoded-mailto';
   private $email_regex;
   private $ptext_email;
   private $mailto_email;
@@ -95,51 +95,28 @@ EOT;
   }
 
   /**
-   * Extract link text
-   */
-  private function enkExtractLinktext($text) {
-    preg_match($this->link_text, $text, $tmatches);
-    return $tmatches[1];
-  }
-
-  /**
-   * Enkode mailto link
-   */
-  private function enkEmailToLink($matches) {
-    return $this->enkodeMailto($matches[1], $matches[1]);
-  }
-
-  /**
-   * Enkode hide link
-   */
-  private function enkHideLink($matches) {
-    $text = $this->enkExtractLinktext($matches[1]);
-    return $this->enkode($matches[1], $text);
-  }
-
-  /**
    * Enkode plaintext emails
    *
    * Encodes all plaintext e-mails into a JavaScript-obscured mailto; the
-   * text of the mailto is the e-mail address itself.
+   * text of the mailto: is the e-mail address itself.
    */
   public function enkodePlaintextEmails($text) {
     return preg_replace_callback($this->ptext_email, array($this, 'enkEmailToLink'), $text);
   }
 
   /**
-   * Enkode mailto links
+   * Enkode mailto: links
    *
-   * Encodes all mailto links into JavaScript obscured text.
+   * Encodes all mailto: links into JavaScript obscured text.
    */
   public function enkodeMailtos($text) {
-    return preg_replace_callback($this->mailto_email, array($this, 'enkHideLink'), $text);
+    return preg_replace_callback($this->mailto_email, array($this, 'enkPlaintextLink'), $text);
   }
 
   /**
    * Enkode all emails
    *
-   * Encodes all mailto links into JavaScript obscured text.
+   * Encodes all mailto: and plaintext links into JavaScript obscured text.
    */
   public function enkodeAllEmails($text) {
     $js = $this->enkodeMailtos($text);
@@ -149,7 +126,30 @@ EOT;
   }
 
   /**
-   * Enkode a Mailto Link
+   * Extract link text
+   */
+  private function enkExtractLinktext($text) {
+    preg_match($this->link_text, $text, $tmatches);
+    return $tmatches[1];
+  }
+
+  /**
+   * Enkode a single mailto: link
+   */
+  private function enkEmailToLink($matches) {
+    return $this->enkodeMailto($matches[1], $matches[1]);
+  }
+
+  /**
+   * Enkode a single plaintext link
+   */
+  private function enkPlaintextLink($matches) {
+    $text = $this->enkExtractLinktext($matches[1]);
+    return $this->enkode($matches[1], $text);
+  }
+
+  /**
+   * Enkode a mailto: link
    */
   public function enkodeMailto($email, $text, $subject = "", $title = "") {
     $content = '<a class="' . $this->enkode_class . '" href="mailto:' . $email;
@@ -185,7 +185,9 @@ EOT;
    * browser doesn't support JavaScript, this message will be shown to the
    * user.
    */
-  public function enkode($content, $text = NULL, $max_passes = MAX_PASSES, $max_length = MAX_LENGTH) {
+  public function enkode($content, $text = NULL) {
+    $max_passes = 20;
+    $max_length = 1024;
     // Our base case -- we'll eventually evaluate this code.
     $kode = "document.write(\"" . 
       addcslashes($content,"\\\'\"&\n\r<>") .
