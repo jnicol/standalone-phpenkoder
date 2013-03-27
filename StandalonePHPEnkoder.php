@@ -9,9 +9,12 @@ Uses PHP to encode email addresses so they can't be read by
 spambots. Encodes plaintext email addresses and wraps them in a
 mailto: link, and obfuscates any pre-existing mailto: links.
 
+This is a standalone version of Michael Greenberg's excellent
+PHPEnkoder Wordpress plugin.
+
 Usage:
 require_once('StandalonePHPEnkoder.php');
-$enkoder = new Enkoder();
+$enkoder = new StandalonePHPEnkoder();
 $cleaned =  $enkoder->enkodeAllEmails($text);
 
 If you only want to encode mailtos:
@@ -21,7 +24,7 @@ If you only want to encode plaintext emails:
 $enkoder->enkodePlaintextEmails($text);
 
 LICENSE (Modified BSD)
-Copyright (c) 2013, Jonathan Nicol.  Derivative work of Michael
+Copyright (c) 2013, Jonathan Nicol. Derivative work of Michael
 Greenberg's PHPEnkoder plugin for Wordpress, which is itself a
 derivative work of Hivelogic Enkoder, Copyright (c) 2006, Automatic 
 Corp. All rights reserved.
@@ -56,10 +59,12 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 class StandalonePHPEnkoder {
-  private $enkoder_uses = 0;
-  private $js_len = 269;
   public $enkode_msg = 'email hidden; JavaScript is required';
   public $enkode_class = 'enkoded-mailto';
+  public $max_passes = 20;
+  public $max_length = 1024;
+  private $min_length = 269;
+  private $enkoder_uses = 0;
   private $email_regex;
   private $ptext_email;
   private $mailto_email;
@@ -186,26 +191,24 @@ EOT;
    * user.
    */
   public function enkode($content, $text = NULL) {
-    $max_passes = 20;
-    $max_length = 1024;
+    $max_passes = $this->max_passes;
+    $max_length = $this->max_length;
+
     // Our base case -- we'll eventually evaluate this code.
     $kode = "document.write(\"" . 
       addcslashes($content,"\\\'\"&\n\r<>") .
       "\");";
 
-    $max_length = max($max_length, strlen($kode) + $this->js_len + 1);
+    $max_length = max($max_length, strlen($kode) + $this->min_length + 1);
     
     $result = "";
     
     // Build up as many encodings as we can.
-    for ($passes = 0;
-         $passes < $max_passes && strlen($kode) < $max_length;
-         $passes++) {
+    for ($passes = 0; $passes < $max_passes && strlen($kode) < $max_length; $passes++) {
       // Pick an encoding at random.
       $idx = rand(0, count($enkodings) - 1);
       $enc = $this->enkodings[$idx][0];
       $dec = $this->enkodings[$idx][1];
-      
       $kode = $this->enkodePass($kode, $enc, $dec);
     }
 
