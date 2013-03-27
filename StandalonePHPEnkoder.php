@@ -25,9 +25,9 @@ $enkoder->enkodePlaintextEmails($text);
 
 LICENSE (Modified BSD)
 Copyright (c) 2013, Jonathan Nicol. Derivative work of Michael
-Greenberg's PHPEnkoder plugin for Wordpress, which is itself a
-derivative work of Hivelogic Enkoder, Copyright (c) 2006, Automatic 
-Corp. All rights reserved.
+Greenberg's PHPEnkoder plugin for Wordpress, Copyright (c) 2006-11,
+Michael Greenberg, which is itself aderivative work of Hivelogic
+Enkoder, Copyright (c) 2006, Automatic Corp. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
