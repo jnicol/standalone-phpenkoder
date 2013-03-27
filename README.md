@@ -13,7 +13,7 @@ class for license details.
 ## Usage
 
     require_once('StandalonePHPEnkoder.php');
-    $enkoder = new Enkoder();
+    $enkoder = new StandalonePHPEnkoder();
     $cleaned =  $enkoder->enkodeAllEmails($text);
 
 If you only want to encode mailtos:
