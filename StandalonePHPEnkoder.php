@@ -10,7 +10,7 @@ spambots. Encodes plaintext email addresses and wraps them in a
 mailto: link, and obfuscates any pre-existing mailto: links.
 
 This is a standalone version of Michael Greenberg's excellent
-PHPEnkoder Wordpress plugin.
+PHPEnkoder Wordpress plugin, based on Hivelogic Enkoder.
 
 Usage:
 require_once('StandalonePHPEnkoder.php');
@@ -41,10 +41,10 @@ met:
      the documentation and/or other materials provided with the
      distribution.
 
-  3. Neither the name of Michael Greenberg, AUTOMATIC CORP. nor the
-     names of its contributors may be used to endorse or promote
-     products derived from this software without specific prior
-     written permission.
+  3. Neither the name of Jonathan Nicol, Michael Greenberg, AUTOMATIC
+     CORP. nor the names of its contributors may be used to endorse
+     or promote products derived from this software without specific
+     prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
