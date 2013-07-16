@@ -134,8 +134,10 @@ EOT;
    * Extract link text
    */
   private function enkExtractLinktext($text) {
-    preg_match($this->link_text, $text, $tmatches);
-    return $tmatches[1];
+    if (preg_match($this->link_text, $text, $tmatches)) {
+      return $tmatches[1];
+    }
+    return null;
   }
 
   /**
@@ -206,7 +208,7 @@ EOT;
     // Build up as many encodings as we can.
     for ($passes = 0; $passes < $max_passes && strlen($kode) < $max_length; $passes++) {
       // Pick an encoding at random.
-      $idx = rand(0, count($enkodings) - 1);
+      $idx = rand(0, count($this->enkodings) - 1);
       $enc = $this->enkodings[$idx][0];
       $dec = $this->enkodings[$idx][1];
       $kode = $this->enkodePass($kode, $enc, $dec);
