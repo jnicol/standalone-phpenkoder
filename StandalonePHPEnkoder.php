@@ -76,7 +76,7 @@ class StandalonePHPEnkoder {
 
   public function __construct() {
     $this->email_regex = '[\w\d+_.-]+@(?:[\w\d_-]+\.)+[\w]{2,6}';
-    $this->ptext_email = '/(?<=[^\w\d\+_.:-])(' . $this->email_regex . ')/i'; /* note the banned first char */
+    $this->ptext_email = '/(?<=[^\/\w\d\+_.:-])(' . $this->email_regex . ')/i'; /* note the banned first char */
     $this->mailto_email = '#(<a[^<>]*?href=[\042\047]mailto:' . $this->email_regex . '[^<>]*?>.*?</a>)#i';
     $this->link_text = "#/>(.*?)</a#i";
 
