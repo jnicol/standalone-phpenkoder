@@ -257,14 +257,16 @@ EOT;
     $name = "enkoder_" . strval($this->enkoder_uses) . "_" . strval(rand());
     $this->enkoder_uses += 1;
     $js = <<<EOT
-<span id="$name">$msg</span><script type="text/javascript">
+<span id="$name">$msg</span><script id="script_{$name}" type="text/javascript">
 /* <!-- */
 function hivelogic_$name() {
 var kode="$clean";var i,c,x;while(eval(kode));
 }
 hivelogic_$name();
 var span = document.getElementById('$name');
+var script = document.getElementById('script_$name');
 span.parentNode.removeChild(span);
+script.parentNode.removeChild(script);
 /* --> */
 </script>
 EOT;
