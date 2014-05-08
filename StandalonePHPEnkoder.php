@@ -199,9 +199,11 @@ EOT;
     $max_length = $this->max_length;
 
     // Our base case -- we'll eventually evaluate this code.
-    $kode = "document.write(\"" . 
-      addcslashes($content,"\\\'\"&\n\r<>") .
-      "\");";
+    // Note that we're using innerHTML() since document.write() fails on
+    // pages loaded using AJAX.
+    $kode = "document.getElementById('ENKODER_ID').outerHTML=\"" . 
+      addcslashes($content,"\\\'\"&\n\r<>") . 
+      "\";";
 
     $max_length = max($max_length, strlen($kode) + $this->min_length + 1);
     
@@ -256,15 +258,16 @@ EOT;
     
     $name = "enkoder_" . strval($this->enkoder_uses) . "_" . strval(rand());
     $this->enkoder_uses += 1;
+    // Note that we decode until $kode contains "getElementById('ENKODER_ID')", 
+    // at which point we replace ENKODER_ID with the ID of our span, then
+    // perform the final eval().
     $js = <<<EOT
 <span id="$name">$msg</span><script type="text/javascript">
 /* <!-- */
 function hivelogic_$name() {
-var kode="$clean";var i,c,x;while(eval(kode));
+var kode="$clean";var i,c,x;while(kode.indexOf("getElementById('ENKODER_ID')") === -1){eval(kode)};kode=kode.replace('ENKODER_ID','$name');eval(kode);
 }
 hivelogic_$name();
-var span = document.getElementById('$name');
-span.parentNode.removeChild(span);
 /* --> */
 </script>
 EOT;
