@@ -262,10 +262,10 @@ EOT;
     // at which point we replace ENKODER_ID with the ID of our span, then
     // perform the final eval().
     $js = <<<EOT
-<span id="$name">$msg</span><script type="text/javascript">
+<span id="$name">$msg</span><script id="script_{$name}" type="text/javascript">
 /* <!-- */
 function hivelogic_$name() {
-var kode="$clean";var i,c,x;while(kode.indexOf("getElementById('ENKODER_ID')") === -1){eval(kode)};kode=kode.replace('ENKODER_ID','$name');eval(kode);
+var kode="$clean",i,c,x,script=document.getElementById("script_{$name}");while(kode.indexOf("getElementById('ENKODER_ID')")===-1){eval(kode)};kode=kode.replace('ENKODER_ID','$name');eval(kode);script.parentNode.removeChild(script);
 }
 hivelogic_$name();
 /* --> */
