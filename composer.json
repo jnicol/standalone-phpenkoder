@@ -1,0 +1,14 @@
+{
+    "name": "jnicol/standalone-phpenkoder",
+    "description": "Uses PHP to encode email addresses so they can't be read by spambots. Encodes plaintext email addresses and wraps them in a mailto: link, and obfuscates any pre-existing mailto: links.",
+    "license": "Modified BSD",
+    "authors": [
+        {
+            "name": "Jonathan Nicol",
+            "homepage": "http://jonathannicol.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.2.0",
+    }
+}
