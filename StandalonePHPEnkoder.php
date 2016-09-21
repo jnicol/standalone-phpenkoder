@@ -150,9 +150,43 @@ EOT;
   }
 
   /**
+   * Unicode-proof htmlentities
+   *
+   * Returns 'normal' chars as chars and weirdos as numeric html entites.
+   * @see http://php.net/manual/en/function.htmlentities.php#107985
+   *
+   */
+  private function utf8entities($str) {
+    // get rid of existing entities else double-escape
+    $str = html_entity_decode(stripslashes($str),ENT_QUOTES,'UTF-8');
+    $ar = preg_split('/(?<!^)(?!$)/u', $str );  // return array of every multi-byte character
+    foreach ($ar as $c){
+      $o = ord($c);
+        if ($o > 255 && ((strlen($c) > 1) || /* multi-byte [unicode] */
+          ($o <32 || $o > 126) || /* <- control / latin weirdos -> */
+          ($o >33 && $o < 40) ||/* quotes + ambersand */
+          ($o >59 && $o < 63) /* html */
+        )) {
+          // convert to numeric entity
+          $c = mb_encode_numericentity($c,array (0x0, 0xffff, 0, 0xffff), 'UTF-8');
+        }
+      $str2 .= $c;
+    }
+    return $str2;
+  }
+
+  /**
+   * Callback method to encode inner HTML
+   */
+  private function enkUtfSafeContent($link) {
+  	return '>'.$this->utf8entities($link[1], ENT_NOQUOTES, 'UTF-8').'</a>';
+  }
+
+  /**
    * Enkode a single plaintext link
    */
   private function enkPlaintextLink($matches) {
+    $matches[1] = preg_replace_callback("#>(.*?)</a>#i", array($this, 'enkUtfSafeContent'), $matches[1]);
     $text = $this->enkExtractLinktext($matches[1]);
     return $this->enkode($matches[1], $text);
   }
