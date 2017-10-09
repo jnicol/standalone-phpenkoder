@@ -1,5 +1,5 @@
 {
-    "name": "jnicol/standalone-phpenkoder",
+    "name": "katzwebservices/standalone-phpenkoder",
     "type": "package",
     "description": "Uses PHP to encode email addresses so they can't be read by spambots. Encodes plaintext email addresses and wraps them in a mailto: link, and obfuscates any pre-existing mailto: links.",
     "license": "Modified BSD",
