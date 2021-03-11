@@ -201,9 +201,10 @@ EOT;
     // Our base case -- we'll eventually evaluate this code.
     // Note that we're using innerHTML() since document.write() fails on
     // pages loaded using AJAX.
-    $kode = "document.getElementById('ENKODER_ID').outerHTML=\"" . 
+    // Use escape() + decodeURIComponent() to preserve multibyte unicode
+    $kode = "document.getElementById('ENKODER_ID').outerHTML=decodeURIComponent(escape(\"" . 
       addcslashes($content,"\\\'\"&\n\r<>") . 
-      "\";";
+      "\"));";
 
     $max_length = max($max_length, strlen($kode) + $this->min_length + 1);
     
@@ -263,12 +264,10 @@ EOT;
     // perform the final eval().
     $js = <<<EOT
 <span id="$name">$msg</span><script id="script_{$name}" type="text/javascript">
-/* <!-- */
 function hivelogic_$name() {
-var kode="$clean",i,c,x,script=document.getElementById("script_{$name}");while(kode.indexOf("getElementById('ENKODER_ID')")===-1){eval(kode)};kode=kode.replace('ENKODER_ID','$name');eval(kode);script.parentNode.removeChild(script);
+var kode="$clean",i,c,x,script=document.currentScript||document.getElementById("script_{$name}");while(kode.indexOf("getElementById('ENKODER_ID')")===-1){eval(kode)};kode=kode.replace('ENKODER_ID','$name');eval(kode);script&&script.parentNode.removeChild(script);
 }
 hivelogic_$name();
-/* --> */
 </script>
 EOT;
 
